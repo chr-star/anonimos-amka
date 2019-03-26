@@ -1,10 +1,12 @@
+#'Use: python anonymizer.py -i <inputfile> -o <outputfile> -d <dictionary file> -c <comma separated column list>'
 
 import pandas as pd
 import numpy as np
 import hashlib
 import json
-import sys, getopt
+import sys
 import string
+import argparse
 from secrets import token_hex
 
 if sys.version_info < (3, 6):
@@ -76,33 +78,21 @@ def anonymize_with_secret(inFile, outFile, cols, dict_file, secret):
 
 
 
+def main():
+   #orisma tou argparse ws ap
+   ap = argparse.ArgumentParser(description = "This a script to ")
 
+   #orizontai ta arguments to argparse
+   ap.add_argument("-i", "--input", required=True, help="Path to input file")
+   ap.add_argument("-o", "--output", required=True, help="Path to output file")
+   ap.add_argument("-d", "--dfile", required=True, help="Path to dictionary file")
+   ap.add_argument("-c", "--cols", required=True, help="comma seperated values for column lists")
 
-def main(argv):
-   inputfile = ''
-   outputfile = ''
-   cols=''
-   try:
-      opts, args = getopt.getopt(argv,"hi:o:d:c:",["ifile=","ofile=","dfile=","cols="])
-   except getopt.GetoptError:
-      print('Use: python anonymizer.py -i <inputfile> -o <outputfile> -d <dictionary file> -c <comma separated column list>')
-      sys.exit(2)
-   for opt, arg in opts:
-      if opt == '-h':
-        print('Use: python anonymizer.py -i <inputfile> -o <outputfile> -d <dictionary file> -c <comma separated column list>')
-        sys.exit()
-      elif opt in ("-i", "--ifile"):
-         inputfile = arg
-      elif opt in ("-o", "--ofile"):
-         outputfile = arg
-      elif opt in ("-d", "--dfile"):
-         dictfile = arg
-      elif opt in ("-c", "--cols"):
-         columns = arg.split(',')
+   args = ap.parse_args()
+
+   #columns = arg.split(',')
    secret=token_hex(64)
-   anonymize_with_secret(inputfile, outputfile, columns, dictfile, secret)
-
-
+   anonymize_with_secret(args.input, args.output, args.cols, args.dfile, secret)
 
 if __name__ == "__main__":
-   main(sys.argv[1:])
+   main()
